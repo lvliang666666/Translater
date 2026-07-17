@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utopia Translator</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23161616'/><polygon points='50,18 64,44 50,70 36,44' fill='%23d9774a'/><polygon points='50,82 64,44 50,70 36,44' fill='%23c0653a' opacity='0.5'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Apple-inspired Dark Theme
+   ============================================================ */
+:root {
+  --bg-primary: #e4eef7;
+  --bg-secondary: #ecf4fa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f5f9fd;
+  --bg-glass: rgba(255,255,255,0.60);
+  --bg-glass-strong: rgba(255,255,255,0.80);
+  --bg-input: #f0f5fb;
+
+  --text-primary: #1a1a30;
+  --text-secondary: #5a5a78;
+  --text-tertiary: #8888a8;
+  --text-muted: #b8b8cc;
+
+  --color-accent: #e85520;
+  --color-accent-dark: #cc4418;
+  --color-accent-light: #d06030;
+  --color-accent-bg: rgba(232,85,32,0.08);
+  --color-accent-bg-strong: rgba(232,85,32,0.14);
+
+  --color-blue: #0088cc;
+  --color-blue-bg: rgba(0,136,204,0.08);
+
+  --color-gold: #c88810;
+  --color-gold-light: #a07010;
+  --color-gold-bg: rgba(200,136,16,0.08);
+
+  --color-rose: #cc3040;
+  --color-rose-bg: rgba(204,48,64,0.08);
+
+  --border-subtle: rgba(0,0,0,0.06);
+  --border-light: rgba(0,0,0,0.08);
+  --border-medium: rgba(0,0,0,0.12);
+  --border-strong: rgba(0,0,0,0.18);
+
+  --shadow-xs: 0 0.5px 1px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+  --shadow-xl: 0 16px 50px rgba(0,0,0,0.10);
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 550ms;
+
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'HarmonyOS Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Cascadia Code', monospace;
+
+  --header-height: 52px;
+  --max-width: 1040px;
+  --content-padding: 36px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color-scheme: light;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow-x: hidden;
+  letter-spacing: -0.012em;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.10); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.20); }
+
+/* ── Header ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(228,238,247,0.82);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  height: var(--header-height);
+  display: flex; align-items: center;
+}
+
+.header-inner {
+  max-width: var(--max-width); width: 100%;
+  margin: 0 auto; padding: 0 var(--content-padding);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.logo-area { display: flex; align-items: center; gap: 10px; }
+
+.logo-icon {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-xs);
+  background: var(--color-accent);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.85rem; flex-shrink: 0;
+}
+
+.logo-title {
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em; line-height: 1.2;
+}
+
+.logo-subtitle {
+  display: none;
+}
+
+.header-nav {
+  display: flex; gap: 1px;
+  background: var(--bg-glass);
+  border-radius: var(--radius-full); padding: 3px;
+  border: 0.5px solid var(--border-subtle);
+}
+
+.nav-btn {
+  padding: 5px 18px; border-radius: var(--radius-full);
+  border: none; background: transparent;
+  color: var(--text-tertiary);
+  font-family: var(--font-family);
+  font-size: 0.8rem; font-weight: 500;
+  cursor: pointer; white-space: nowrap;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.nav-btn:hover { color: var(--text-secondary); }
+
+.nav-btn.active {
+  background: rgba(0,0,0,0.06); color: var(--text-primary); font-weight: 550;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.header-actions { display: flex; gap: 2px; align-items: center; }
+
+/* ── Main Layout ── */
+.main {
+  max-width: var(--max-width); margin: 0 auto;
+  padding: var(--content-padding);
+  position: relative; z-index: 1;
+}
+
+.translate-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px; align-items: start;
+}
+
+.panel { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Input Card ── */
+.input-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px 26px;
+  transition: border-color var(--duration-normal) var(--ease-out-expo),
+              box-shadow var(--duration-normal) var(--ease-out-expo),
+              background var(--duration-normal) var(--ease-out-expo);
+}
+
+.input-card:focus-within {
+  border-color: rgba(0,112,144,0.30);
+  box-shadow: 0 0 0 3px rgba(0,112,144,0.08);
+  background: #fafcfe;
+}
+
+.input-label {
+  font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+}
+
+.textarea {
+  width: 100%; min-height: 160px;
+  border: none; outline: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: 1rem; line-height: 1.65;
+  color: var(--text-primary);
+  resize: vertical; font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.textarea::placeholder { color: var(--text-muted); }
+.textarea::selection { background: rgba(0,120,80,0.15); color: #1a1a30; }
+
+.char-count {
+  text-align: right; font-size: 0.7rem;
+  color: var(--text-muted); margin-top: 8px;
+  font-family: var(--font-mono);
+}
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px; padding: 9px 20px;
+  border-radius: var(--radius-full);
+  border: 0.5px solid transparent;
+  font-family: var(--font-family);
+  font-size: 0.82rem; font-weight: 540;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  white-space: nowrap; letter-spacing: -0.01em;
+  user-select: none; -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active { transform: scale(0.965); }
+
+.btn-primary {
+  background: var(--color-accent); color: #fff; border-color: transparent;
+  font-weight: 580;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-dark);
+  box-shadow: 0 0 0 4px rgba(232,85,32,0.14);
+}
+
+.btn-secondary {
+  background: var(--bg-glass-strong);
+  color: var(--text-secondary);
+  border-color: var(--border-light);
+}
+
+.btn-secondary:hover {
+  background: #e8e8f0; color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.btn-ghost {
+  background: transparent; color: var(--text-tertiary);
+  padding: 5px 10px; border-color: transparent;
+  font-weight: 480;
+}
+
+.btn-ghost:hover {
+  background: rgba(0,0,0,0.04); color: var(--text-secondary);
+}
+
+.btn-save {
+  background: var(--color-gold-bg);
+  color: var(--color-gold-light);
+  border-color: rgba(240,184,70,0.18);
+  font-weight: 580;
+  border-radius: var(--radius-full);
+}
+
+.btn-save:hover {
+  background: var(--color-gold); color: #fff;
+  border-color: var(--color-gold);
+}
+
+.btn-save.saved {
+  background: var(--color-accent-bg);
+  color: var(--color-accent-light);
+  border-color: rgba(255,123,61,0.18);
+  pointer-events: none;
+}
+
+.btn-xs { padding: 4px 11px; font-size: 0.7rem; border-radius: var(--radius-full); font-weight: 500; }
+.btn-icon { width: 30px; height: 30px; padding: 0; border-radius: var(--radius-sm); font-size: 0.85rem; }
+.shortcut-hint { font-size: 0.62rem; color: var(--text-muted); margin-left: 2px; font-weight: 400; }
+
+/* ── Result Card ── */
+.result-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  animation: fadeSlideIn var(--duration-slower) var(--ease-out-expo);
+  min-height: 160px;
+}
+
+.result-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 64px 40px; text-align: center;
+  color: var(--text-muted);
+}
+
+.result-empty-icon { font-size: 2.2rem; margin-bottom: 16px; opacity: 0.25; }
+
+.result-empty-text {
+  font-size: 0.85rem; font-weight: 400;
+  line-height: 1.65; color: var(--text-tertiary);
+}
+
+.result-section { margin-bottom: 24px; }
+.result-section:last-child { margin-bottom: 0; }
+
+.result-label {
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-tertiary); margin-bottom: 8px;
+}
+
+.result-english-wrapper {
+  display: flex; align-items: flex-start; gap: 14px;
+}
+
+.result-english {
+  color: #b07800; line-height: 1.55;
+  padding: 16px 20px; background: var(--bg-input);
+  border-radius: var(--radius-md);
+  font-size: 1.15rem; font-weight: 600;
+  border: 1px solid rgba(176,120,0,0.12);
+  flex: 1; min-width: 0;
+  letter-spacing: -0.01em;
+}
+
+.speak-btns {
+  display: flex; flex-direction: column; gap: 5px; flex-shrink: 0;
+}
+
+.btn-speak {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 13px; border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border-light);
+  background: var(--bg-glass-strong);
+  color: var(--text-secondary);
+  font-family: var(--font-family); font-size: 0.7rem; font-weight: 530;
+  cursor: pointer; white-space: nowrap;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  user-select: none; -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-speak:hover {
+  background: #e8e8f0; color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.btn-speak:active { transform: scale(0.95); }
+
+.btn-speak.speaking {
+  background: var(--color-accent-bg); color: var(--color-accent);
+  border-color: rgba(232,85,32,0.30);
+  animation: speakPulse 0.9s ease-in-out infinite;
+}
+
+.btn-speak .speak-flag { font-size: 0.9rem; line-height: 1; }
+.btn-speak .speak-icon { font-size: 0.72rem; }
+
+/* ── Scenarios ── */
+.scenarios-list {
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.scenario-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 16px; background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border-subtle);
+  transition: background var(--duration-fast);
+}
+
+.scenario-item:hover { background: rgba(0,0,0,0.02); }
+
+.scenario-en {
+  font-size: 0.84rem; font-weight: 500;
+  color: #007090; line-height: 1.55; flex: 1;
+  letter-spacing: -0.01em;
+}
+
+.scenario-cn {
+  font-size: 0.84rem; color: var(--text-secondary);
+  line-height: 1.55; flex: 1; padding-left: 14px;
+  border-left: 0.5px solid var(--border-light);
+}
+
+/* ── Chinese Translation ── */
+.result-chinese {
+  color: #007850; line-height: 1.75;
+  padding: 16px 20px; background: rgba(0,120,80,0.05);
+  border-radius: var(--radius-md);
+  border-left: 3px solid #007850;
+  font-size: 1.05rem; font-weight: 600;
+}
+
+.result-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+
+.meta-chip {
+  display: inline-flex; align-items: center;
+  padding: 4px 12px; border-radius: var(--radius-full);
+  font-size: 0.72rem; font-weight: 510; letter-spacing: -0.005em;
+}
+
+.meta-domain { background: rgba(0,112,144,0.08); color: #007090; }
+.meta-pos { background: rgba(176,120,0,0.08); color: #b07800; }
+.meta-keyword {
+  color: #c03070; border: 1px solid rgba(192,48,112,0.18); border-radius: var(--radius-full);
+}
+
+.result-summary {
+  font-size: 0.85rem; color: #6040a0;
+  line-height: 1.7; padding: 16px 20px;
+  background: var(--bg-input); border-radius: var(--radius-md);
+  border: 1px solid rgba(96,64,160,0.10);
+}
+
+/* ── Tag Input ── */
+.tag-input-area {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  padding: 9px 14px; background: var(--bg-input);
+  border: 0.5px solid var(--border-light);
+  border-radius: var(--radius-sm); min-height: 44px;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+
+.tag-input-area:focus-within {
+  border-color: rgba(0,112,144,0.25);
+  box-shadow: 0 0 0 3px rgba(0,112,144,0.06);
+}
+
+.tag-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; background: var(--color-accent-bg);
+  color: var(--color-accent-light); border-radius: var(--radius-full);
+  font-size: 0.74rem; font-weight: 510;
+  border: 0.5px solid rgba(255,123,61,0.16);
+  animation: chipIn var(--duration-fast) var(--ease-out-quart);
+}
+
+.tag-chip-remove {
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  font-size: 0.6rem; color: var(--color-accent-light);
+  transition: all var(--duration-fast);
+  background: transparent; border: none;
+  font-family: var(--font-family); line-height: 1;
+}
+
+.tag-chip-remove:hover { background: rgba(255,123,61,0.25); color: #fff; }
+
+.tag-input {
+  border: none; outline: none; background: transparent;
+  font-family: var(--font-family); font-size: 0.84rem;
+  color: var(--text-primary); min-width: 70px; flex: 1;
+}
+
+.tag-input::placeholder { color: var(--text-muted); }
+
+.tag-suggestions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+
+.tag-suggestion {
+  padding: 5px 13px; border-radius: var(--radius-full);
+  font-size: 0.72rem; font-weight: 460;
+  color: var(--text-tertiary); background: transparent;
+  border: 0.5px solid var(--border-subtle); cursor: pointer;
+  transition: all var(--duration-fast);
+  font-family: var(--font-family);
+}
+
+.tag-suggestion:hover {
+  color: var(--color-accent);
+  border-color: rgba(232,85,32,0.25);
+  background: var(--color-accent-bg);
+}
+
+/* ── Recent Section ── */
+.recent-section { margin-top: 2px; }
+
+.recent-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.recent-title {
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+.recent-list { display: flex; flex-direction: column; gap: 2px; max-height: 340px; overflow-y: auto; }
+
+.recent-item {
+  padding: 10px 14px; border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  background: transparent;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+
+.recent-item:hover { background: rgba(0,0,0,0.03); }
+
+.recent-item-text {
+  font-size: 0.82rem; color: #3a8020;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.recent-item-time { font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; }
+
+.recent-empty { font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 24px 0; }
+
+/* ── Collection View ── */
+.collection-view { display: none; }
+.collection-view.active { display: block; animation: fadeIn var(--duration-slow) var(--ease-out-quart); }
+
+.collection-header {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  align-items: center; justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.collection-count { font-size: 0.84rem; color: var(--text-tertiary); font-weight: 440; }
+.collection-count strong { color: var(--text-secondary); font-weight: 600; }
+
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 15px; background: var(--bg-card);
+  border: 0.5px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  flex: 1; max-width: 340px;
+}
+
+.search-bar:focus-within {
+  border-color: rgba(0,112,144,0.25);
+  box-shadow: 0 0 0 3px rgba(0,112,144,0.06);
+}
+
+.search-icon { font-size: 0.85rem; color: var(--text-muted); flex-shrink: 0; }
+
+.search-input {
+  border: none; outline: none; background: transparent;
+  font-family: var(--font-family); font-size: 0.85rem;
+  color: var(--text-primary); width: 100%;
+}
+.search-input::placeholder { color: var(--text-muted); }
+
+.collection-actions { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 16px;
+}
+
+.term-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  display: flex; flex-direction: column; gap: 14px;
+  animation: cardIn var(--duration-slower) var(--ease-out-expo);
+}
+
+.term-card:hover {
+  background: var(--bg-card-hover); border-color: var(--border-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.term-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+
+.term-english {
+  font-size: 0.95rem; font-weight: 650;
+  color: #b07800;
+  word-break: break-word; line-height: 1.4; letter-spacing: -0.01em;
+}
+
+.term-id { font-size: 0.6rem; color: var(--text-muted); flex-shrink: 0; font-family: var(--font-mono); }
+
+.term-chinese {
+  font-size: 0.96rem; font-weight: 600; color: #007850;
+  line-height: 1.5;
+}
+
+.term-divider { height: 0.5px; background: var(--border-subtle); margin: 1px 0; }
+
+.term-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.term-tag {
+  padding: 3px 10px; border-radius: var(--radius-full);
+  font-size: 0.68rem; font-weight: 510;
+  background: var(--color-accent-bg); color: var(--color-accent-light);
+  border: 0.5px solid rgba(255,123,61,0.12);
+}
+
+.term-date { font-size: 0.68rem; color: var(--text-muted); }
+
+.term-actions { display: flex; gap: 2px; margin-top: auto; }
+
+.collection-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 90px 32px; text-align: center;
+  grid-column: 1 / -1;
+}
+
+.collection-empty-icon { font-size: 2.8rem; margin-bottom: 16px; opacity: 0.22; }
+.collection-empty-title { font-size: 1.05rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+.collection-empty-text { font-size: 0.84rem; color: var(--text-muted); max-width: 320px; line-height: 1.6; }
+
+/* ── Toast ── */
+.toast-container {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+  z-index: 1000;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 10px 22px; background: rgba(50,50,70,0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #fff;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem; font-weight: 500; letter-spacing: -0.01em;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn var(--duration-normal) var(--ease-spring);
+  pointer-events: auto;
+}
+
+.toast.success { border-color: rgba(0,120,80,0.30); }
+.toast.warning { border-color: rgba(200,136,16,0.30); }
+.toast.out { animation: toastOut var(--duration-normal) var(--ease-in-out) forwards; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(200,210,225,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn var(--duration-fast) var(--ease-out-quart);
+}
+
+.modal {
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: 28px 30px; max-width: 440px; width: 90%;
+  box-shadow: 0 16px 50px rgba(0,0,0,0.12);
+  animation: scaleIn var(--duration-normal) var(--ease-spring);
+}
+
+.modal-title { font-size: 1.05rem; font-weight: 620; margin-bottom: 10px; color: var(--text-primary); }
+.modal-body { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 22px; line-height: 1.6; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ── Edit Fields ── */
+.edit-tag-area { margin-top: 12px; }
+.edit-field { margin-bottom: 16px; }
+
+.edit-field label {
+  display: block; font-size: 0.7rem; font-weight: 600;
+  color: var(--text-tertiary); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 7px;
+}
+
+.edit-field input,
+.edit-field textarea {
+  width: 100%; padding: 10px 15px;
+  border: 0.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family); font-size: 0.88rem;
+  color: var(--text-primary); outline: none;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  background: var(--bg-input);
+}
+
+.edit-field input:focus,
+.edit-field textarea:focus {
+  border-color: rgba(0,112,144,0.25);
+  box-shadow: 0 0 0 3px rgba(0,112,144,0.06);
+}
+
+.edit-field textarea { min-height: 60px; resize: vertical; }
+
+/* ── Settings ── */
+.api-status { display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 500; color: var(--text-tertiary); }
+.api-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.api-dot.active { background: var(--color-accent); box-shadow: 0 0 6px rgba(232,85,32,0.3); }
+.api-dot.inactive { background: var(--text-muted); }
+
+.settings-hint {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; background: var(--color-gold-bg);
+  border: 0.5px solid rgba(240,184,70,0.14);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem; color: var(--color-gold-light);
+  margin-bottom: 16px;
+}
+
+.edit-field input[type="password"] { font-family: var(--font-mono); letter-spacing: 0.04em; }
+
+.test-result { font-size: 0.76rem; padding: 8px 14px; border-radius: var(--radius-sm); margin-top: 8px; display: none; }
+.test-result.success { display: block; background: var(--color-accent-bg); color: var(--color-accent-light); }
+.test-result.error { display: block; background: var(--color-rose-bg); color: var(--color-rose); }
+
+/* ── Hidden ── */
+#import-file { display: none; }
+
+/* ── Keyframes ── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cardIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-8px) scale(0.94); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes chipIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(232,85,32,0.25); } 50% { box-shadow: 0 0 0 8px rgba(232,85,32,0); } }
+@keyframes rainbowShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(0,0,0,0.10);
+  border-top-color: #555;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+.btn-loading { pointer-events: none; opacity: 0.65; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+  .collection-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  :root { --content-padding: 24px; }
+  .translate-view { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+  .collection-grid { grid-template-columns: 1fr; }
+  .collection-header { flex-direction: column; align-items: stretch; }
+  .search-bar { max-width: none; }
+}
+
+@media (max-width: 640px) {
+  :root { --content-padding: 18px; --header-height: 48px; }
+  .logo-subtitle { display: none; }
+  .header-inner { gap: 6px; }
+  .nav-btn { padding: 4px 13px; font-size: 0.74rem; }
+  .input-card { padding: 20px; }
+  .textarea { min-height: 120px; font-size: 0.92rem; }
+  .result-card { padding: 22px; }
+  .btn { padding: 8px 16px; font-size: 0.8rem; }
+  .term-card { padding: 18px; }
+  .modal { padding: 22px; }
+}
+
+@media (max-width: 420px) {
+  .btn-row { flex-direction: column; }
+  .btn { width: 100%; }
+  .collection-grid { grid-template-columns: 1fr; gap: 12px; }
+  .header-nav { gap: 1px; }
+  .nav-btn { padding: 4px 11px; font-size: 0.7rem; }
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-icon">&#x2726;</div>
+      <div class="logo-text">
+        <span class="logo-title">Utopia Translator</span>
+        <span class="logo-subtitle">Build your personal terminology library.</span>
+      </div>
+    </div>
+    <nav class="header-nav" id="headerNav">
+      <button class="nav-btn active" data-view="translate">Translate</button>
+      <button class="nav-btn" data-view="collection">Collection</button>
+    </nav>
+    <div class="header-actions">
+      <span class="api-status" id="apiStatus" title="API not configured"><span class="api-dot inactive"></span></span>
+      <button class="btn btn-ghost btn-xs" id="btnSettings" title="API Settings">&#x2699;</button>
+      <button class="btn btn-ghost btn-xs" id="btnExportJSON" title="Export JSON">&#x2B07; JSON</button>
+      <button class="btn btn-ghost btn-xs" id="btnExportMD" title="Export Markdown">&#x2B07; MD</button>
+      <button class="btn btn-ghost btn-xs" id="btnImport" title="Import JSON">&#x2B06; Import</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="translate-view" id="translateView">
+    <div class="panel" id="leftPanel">
+      <div class="input-card">
+        <div class="input-label">English Text</div>
+        <textarea class="textarea" id="inputText" placeholder="Paste English here..." rows="5" autofocus></textarea>
+        <div class="char-count" id="charCount">0 characters</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnTranslate">&#x27A4; Translate <span class="shortcut-hint">Ctrl+Enter</span></button>
+        <button class="btn btn-secondary" id="btnClear">&#x2715; Clear <span class="shortcut-hint">Esc</span></button>
+      </div>
+      <div class="recent-section" id="recentSection">
+        <div class="recent-header">
+          <span class="recent-title">Recent</span>
+          <button class="btn btn-ghost btn-xs" id="btnClearRecent" style="font-size:0.7rem;">Clear all</button>
+        </div>
+        <div class="recent-list" id="recentList">
+          <div class="recent-empty">No recent translations yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="rightPanel">
+      <div class="result-card" id="resultCard">
+        <div class="result-empty" id="resultEmpty">
+          <div class="result-empty-icon">&#x2728;</div>
+          <div class="result-empty-text">Your translation will appear here.<br>Paste English text on the left and click <strong>Translate</strong>.</div>
+        </div>
+        <div id="resultContent" style="display:none;"></div>
+      </div>
+      <div id="saveSection" style="display:none;">
+        <div class="tag-input-area" id="tagInputArea">
+          <input type="text" class="tag-input" id="tagInputField" placeholder="Add tags..." />
+        </div>
+        <div class="tag-suggestions" id="tagSuggestions"></div>
+        <div style="margin-top: 12px;">
+          <button class="btn btn-save" id="btnSave">&#x2B50; Save Term <span class="shortcut-hint">Ctrl+S</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="collection-view" id="collectionView">
+    <div class="collection-header">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div class="search-bar" style="max-width:320px;">
+          <span class="search-icon">&#x1F50D;</span>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search terms... (Ctrl+F)" />
+        </div>
+        <span class="collection-count" id="collectionCount"><strong>0</strong> terms</span>
+      </div>
+      <div class="collection-actions">
+        <button class="btn btn-ghost btn-xs" id="btnClearCollection">Clear all</button>
+      </div>
+    </div>
+    <div class="collection-grid" id="collectionGrid">
+      <div class="collection-empty">
+        <div class="collection-empty-icon">&#x1F4DA;</div>
+        <div class="collection-empty-title">Your collection is empty</div>
+        <div class="collection-empty-text">Translate some text and click the star button to start building your personal terminology library.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+<input type="file" id="importFile" accept=".json" />
+
+<div id="editModalOverlay" class="modal-overlay" style="display:none;">
+  <div class="modal" id="editModal">
+    <h3 class="modal-title">Edit Term</h3>
+    <div class="edit-field">
+      <label>English</label>
+      <input type="text" id="editEnglish" />
+    </div>
+    <div class="edit-field">
+      <label>Chinese</label>
+      <input type="text" id="editChinese" />
+    </div>
+    <div class="edit-field">
+      <label>Tags (comma separated)</label>
+      <input type="text" id="editTags" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="btnEditCancel">Cancel</button>
+      <button class="btn btn-primary" id="btnEditSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="settingsModalOverlay" class="modal-overlay" style="display:none;">
+  <div class="modal" id="settingsModal" style="max-width:480px;">
+    <h3 class="modal-title">&#x2699; API Settings</h3>
+    <div class="modal-body" style="font-size:0.82rem;color:var(--text-tertiary);">Configure your DeepSeek API to power translations with structured academic analysis.</div>
+    <div class="edit-field">
+      <label>API Key</label>
+      <input type="password" id="settingsApiKey" placeholder="sk-..." autocomplete="off" />
+    </div>
+    <div class="edit-field">
+      <label>API Endpoint</label>
+      <input type="text" id="settingsEndpoint" placeholder="https://api.deepseek.com/v1/chat/completions" />
+    </div>
+    <div class="edit-field">
+      <label>Model</label>
+      <input type="text" id="settingsModel" placeholder="deepseek-chat" />
+    </div>
+    <div class="test-result" id="testResult"></div>
+    <div class="modal-actions" style="margin-top:12px;">
+      <button class="btn btn-secondary" id="btnSettingsCancel">Cancel</button>
+      <button class="btn btn-ghost" id="btnTestConnection">&#x21BB; Test</button>
+      <button class="btn btn-primary" id="btnSettingsSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const CONFIG = {
+    MAX_HISTORY: 100,
+    MAX_RECENT: 10,
+    STORAGE_KEY_TERMS: 'utopia_terms',
+    STORAGE_KEY_HISTORY: 'utopia_history',
+    STORAGE_KEY_SETTINGS: 'utopia_settings',
+    DEEPSEEK_DEFAULTS: {
+      apiEndpoint: 'https://api.deepseek.com/v1/chat/completions',
+      model: 'deepseek-chat',
+      apiKey: '',
+    },
+  };
+
+  const DOMAIN_KEYWORDS = {
+    'Machine Learning': /neural|training|model|dataset|gradient|loss function|epoch|batch size|hidden layer|embedding|transformer|attention mechanism|bert|gpt|llm|fine.tun|inference|tokeniz|parameter|deep learning|classification|regression|cluster|overfit|backprop|activation|softmax|dropout|normalization|convolution|recurrent|lstm|encoder|decoder|pretrain|checkpoint|hyperparameter/i,
+    'Deep Learning': /neural network|cnn|rnn|gan|diffusion model|deep reinforcement|transfer learning|multi.head attention|residual|layer norm|batch norm|dropout|weight decay|learning rate|optimizer|sgd|adam|adamw/i,
+    'NLP': /tokeniz|pars(e|ing)|semantic|syntax|corpus|n.?gram|pos tag|ner|named entity|sentiment|text classif|language model|word embedding|glove|word2vec|fasttext|lemmatiz|stemm|chunk|coreference|discourse|dialogue|summariz|machine translation/i,
+    'Computer Vision': /image|convolution|c[nN][nN]|object detection|segment|pixel|feature map|pooling|backbone|yolo|resnet|vgg|inception|gan|generative adversarial|style transfer|optical flow|pose estimation|face recognition|ocr|augment/i,
+    'Database': /sql|nosql|query|index|transaction|shard|replica|postgres|mysql|mongodb|redis|schema|join|acid|oltp|olap|b.?tree|wal|vacuum|partition|replication|consistency|durability/i,
+    'Networking': /tcp|udp|http|https|dns|load balanc|proxy|firewall|latency|bandwidth|packet|rout|gateway|socket|api|rest|graphql|grpc|websocket|cdn|tls|ssl|certificate|dns|ip address|subnet/i,
+    'Operating Systems': /kernel|syscall|scheduler|memory management|file system|process|thread|mutex|semaphore|deadlock|cache|buffer|page fault|virtual memory|interrupt|context switch|concurrency|parallelism|i\.o|mmap|inode/i,
+    'Frontend': /react|vue|angular|component|dom|css|html|javascript|typescript|rendering|browser|responsive|webpack|vite|svelte|next\.?js|nuxt|tailwind|sass|less|jsx|virtual dom|spa|pwa|service worker/i,
+    'Backend': /server|microservice|api gateway|message queue|kafka|rabbitmq|grpc|protobuf|docker|kubernetes|ci\.cd|devops|nginx|apache|node\.?js|express|fastapi|django|flask|spring|golang|rust.*server/i,
+    'Algorithm': /sort|search|graph|tree|hash|dynamic program|greedy|backtrack|divide\.conquer|complexity|big.?o|recursion|iteration|bfs|dfs|dijkstra|binary search|quick.?sort|merge.?sort|heap/i,
+    'Security': /encrypt|decrypt|hash|password|auth|oauth|jwt|token|cors|xss|csrf|sql injection|vulnerability|exploit|penetration|firewall|malware|phishing|https|ssl|tls|public key|private key/i,
+  };
+
+  const POS_PATTERNS = [
+    { pos: 'n.', pattern: /^(the|a|an)\s|\b(ness|tion|sion|ment|ity|ence|ance|hood|ship|dom|ics|ogy|graphy|metry|nomy|logy)\b$/i },
+    { pos: 'v.', pattern: /^(to|can|will|shall|must|may|might|could|would|should)\s|\b(ate|ify|ize|ise|en)\b$/i },
+    { pos: 'adj.', pattern: /\b(able|ible|al|ial|ical|ful|less|ous|ious|ive|ative|itic|ical)\b$/i },
+    { pos: 'adv.', pattern: /\bly$/i },
+  ];
+
+  const PRESET_TAGS = [
+    'AI', 'ML', 'DL', 'NLP', 'CV', 'LLM', 'Transformer',
+    'Database', 'Algorithm', 'Networking', 'OS', 'Security',
+    'Frontend', 'Backend', 'Paper', 'Math', 'Statistics',
+    'Python', 'JavaScript', 'Architecture'
+  ];
+
+  const KNOWN_ENTITIES = {
+    'anthropic':       { domain: 'AI / LLM',      note: 'AI safety company, creator of Claude - a frontier large language model.' },
+    'openai':          { domain: 'AI / LLM',      note: 'AI research organization, creator of GPT, ChatGPT, and DALL-E.' },
+    'deepmind':        { domain: 'AI Research',   note: 'Alphabet-owned AI research lab behind AlphaGo, AlphaFold, and Gemini.' },
+    'google ai':       { domain: 'AI Research',   note: 'AI research division of Google, developing Gemini and TensorFlow.' },
+    'meta ai':         { domain: 'AI Research',   note: 'AI research at Meta (Facebook), creators of LLaMA and PyTorch.' },
+    'mistral':         { domain: 'AI / LLM',      note: 'French AI company building open-weight large language models.' },
+    'cohere':          { domain: 'AI / LLM',      note: 'AI company specializing in enterprise-grade LLMs and embeddings.' },
+    'stability ai':    { domain: 'AI / Gen',      note: 'AI company known for Stable Diffusion image generation models.' },
+    'midjourney':      { domain: 'AI / Gen',      note: 'Independent research lab behind the Midjourney image generation model.' },
+    'inflection':      { domain: 'AI / LLM',      note: 'AI company building Pi, a personal AI assistant.' },
+    'xai':             { domain: 'AI / LLM',      note: "Elon Musk's AI company building the Grok models." },
+    'deepseek':        { domain: 'AI / LLM',      note: 'Chinese AI company, creator of DeepSeek-V3 and DeepSeek-R1 models.' },
+    'zhipu':           { domain: 'AI / LLM',      note: 'Tsinghua-affiliated AI company, creators of GLM and ChatGLM models.' },
+    'moonshot':        { domain: 'AI / LLM',      note: 'Chinese AI startup behind Kimi, a long-context LLM.' },
+    'claude':          { domain: 'AI / LLM',      note: "Anthropic's frontier large language model, with variants Opus, Sonnet, and Haiku." },
+    'gpt':             { domain: 'AI / LLM',      note: "OpenAI's Generative Pre-trained Transformer model series." },
+    'chatgpt':         { domain: 'AI / LLM',      note: "OpenAI's conversational AI product built on GPT models." },
+    'gemini':          { domain: 'AI / LLM',      note: "Google DeepMind's multimodal AI model family." },
+    'llama':           { domain: 'AI / LLM',      note: "Meta's open-weight large language model series." },
+    'qwen':            { domain: 'AI / LLM',      note: "Alibaba's Tongyi Qianwen (Qwen) large language model series." },
+    'grok':            { domain: 'AI / LLM',      note: "xAI's large language model with real-time knowledge via X platform." },
+    'copilot':         { domain: 'AI / Product',   note: "Microsoft's AI assistant integrated across Windows, Edge, and GitHub." },
+    'cursor':          { domain: 'AI / Product',   note: 'AI-first code editor built on VS Code with built-in LLM capabilities.' },
+    'pytorch':         { domain: 'Deep Learning',  note: 'Open-source ML framework developed by Meta AI.' },
+    'tensorflow':      { domain: 'Deep Learning',  note: "Google's open-source ML platform and framework." },
+    'jax':             { domain: 'Deep Learning',  note: "Google's high-performance numerical computing and ML framework." },
+    'hugging face':    { domain: 'AI / Platform',  note: 'AI community platform and model hub for sharing ML models and datasets.' },
+    'huggingface':     { domain: 'AI / Platform',  note: 'AI community platform and model hub for sharing ML models and datasets.' },
+    'langchain':       { domain: 'AI / Framework', note: 'Framework for building LLM-powered applications with chained components.' },
+    'llamaindex':      { domain: 'AI / Framework', note: 'Data framework for connecting LLMs to external data sources.' },
+    'vllm':            { domain: 'AI / Infra',     note: 'High-throughput LLM serving engine with efficient memory management.' },
+    'ollama':          { domain: 'AI / Infra',     note: 'Tool for running LLMs locally with a simple CLI interface.' },
+    'langgraph':       { domain: 'AI / Framework', note: 'Library for building stateful multi-actor LLM applications as graphs.' },
+    'crewai':          { domain: 'AI / Framework', note: 'Multi-agent orchestration framework for AI agent teams.' },
+    'autogen':         { domain: 'AI / Framework', note: "Microsoft's multi-agent conversation framework for LLM applications." },
+    'transformer':     { domain: 'AI / Arch',      note: 'Neural network architecture based on self-attention, foundation of modern LLMs.' },
+    'attention':       { domain: 'AI / Arch',      note: 'Mechanism allowing models to focus on relevant parts of input - core to transformers.' },
+    'rag':             { domain: 'AI / Technique',  note: 'Retrieval-Augmented Generation - grounding LLM outputs in external knowledge.' },
+    'fine-tuning':     { domain: 'AI / Technique',  note: 'Process of adapting a pre-trained model to a specific task or domain.' },
+    'rlhf':            { domain: 'AI / Technique',  note: 'Reinforcement Learning from Human Feedback - aligning models with human preferences.' },
+    'hallucination':   { domain: 'AI / Concept',   note: 'When LLMs generate plausible-sounding but factually incorrect information.' },
+    'aws':             { domain: 'Cloud',           note: 'Amazon Web Services - the largest public cloud provider.' },
+    'gcp':             { domain: 'Cloud',           note: 'Google Cloud Platform - cloud computing services by Google.' },
+    'azure':           { domain: 'Cloud',           note: 'Microsoft Azure - cloud computing platform by Microsoft.' },
+    'docker':          { domain: 'DevOps',          note: 'Platform for developing, shipping, and running containerized applications.' },
+    'kubernetes':      { domain: 'DevOps',          note: 'Open-source container orchestration platform for automating deployment and scaling.' },
+    'k8s':             { domain: 'DevOps',          note: 'Shorthand for Kubernetes - container orchestration platform.' },
+    'terraform':       { domain: 'DevOps',          note: 'Infrastructure-as-Code tool by HashiCorp for provisioning cloud resources.' },
+  };
+
+  const Storage = {
+    getTerms() {
+      try { return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_TERMS)) || []; }
+      catch { return []; }
+    },
+    saveTerms(terms) {
+      try { localStorage.setItem(CONFIG.STORAGE_KEY_TERMS, JSON.stringify(terms)); }
+      catch (e) { UI.toast('Storage full. Please export and clear some terms.', 'warning'); }
+    },
+    addTerm(term) {
+      const terms = this.getTerms();
+      const exists = terms.find(t => t.english.toLowerCase() === term.english.toLowerCase());
+      if (exists) {
+        Object.assign(exists, term, { id: exists.id, date: exists.date });
+      } else {
+        term.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        term.date = new Date().toISOString();
+        terms.unshift(term);
+      }
+      this.saveTerms(terms);
+      return exists ? 'updated' : 'saved';
+    },
+    deleteTerm(id) {
+      this.saveTerms(this.getTerms().filter(t => t.id !== id));
+    },
+    updateTerm(id, updates) {
+      const terms = this.getTerms();
+      const idx = terms.findIndex(t => t.id === id);
+      if (idx !== -1) { Object.assign(terms[idx], updates); this.saveTerms(terms); return true; }
+      return false;
+    },
+    getHistory() {
+      try { return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_HISTORY)) || []; }
+      catch { return []; }
+    },
+    addHistory(entry) {
+      const history = this.getHistory();
+      const filtered = history.filter(h => h.english !== entry.english);
+      filtered.unshift({ ...entry, id: Date.now().toString(36), date: new Date().toISOString() });
+      if (filtered.length > CONFIG.MAX_HISTORY) filtered.length = CONFIG.MAX_HISTORY;
+      try { localStorage.setItem(CONFIG.STORAGE_KEY_HISTORY, JSON.stringify(filtered)); }
+      catch { /* fail silent */ }
+    },
+    clearHistory() { localStorage.removeItem(CONFIG.STORAGE_KEY_HISTORY); },
+    getRecent() { return this.getHistory().slice(0, CONFIG.MAX_RECENT); },
+    exportJSON() {
+      return JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), terms: this.getTerms(), history: this.getHistory() }, null, 2);
+    },
+    exportMarkdown() {
+      const terms = this.getTerms();
+      let md = '# My Terminology\n\n';
+      if (!terms.length) return md + '_No terms collected yet._\n';
+      terms.forEach(t => {
+        md += `## ${t.english}\n\n**Chinese:** ${t.chinese || '-'}\n\n`;
+        if (t.domain) md += `**Domain:** ${t.domain}\n\n`;
+        if (t.pos) md += `**POS:** ${t.pos}\n\n`;
+        if (t.tags && t.tags.length) md += `**Tags:** ${t.tags.join(', ')}\n\n`;
+        if (t.summary) md += `**Note:** ${t.summary}\n\n`;
+        if (t.scenarios && t.scenarios.length) { md += `**Usage Scenarios:**\n`; t.scenarios.forEach(function(s) { md += `- EN: ${s.en}\n  CN: ${s.cn}\n`; }); md += '\n'; }
+        md += `**Date:** ${new Date(t.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}\n\n---\n\n`;
+      });
+      return md;
+    },
+    importJSON(jsonString) {
+      const data = JSON.parse(jsonString);
+      if (!data.terms || !Array.isArray(data.terms)) throw new Error('Invalid format: missing terms array');
+      const existing = this.getTerms();
+      const existingIds = new Set(existing.map(t => t.english.toLowerCase()));
+      let added = 0, skipped = 0;
+      data.terms.forEach(t => {
+        if (!existingIds.has(t.english.toLowerCase())) {
+          t.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + '_imported';
+          existing.unshift(t); existingIds.add(t.english.toLowerCase()); added++;
+        } else { skipped++; }
+      });
+      this.saveTerms(existing);
+      return { added, skipped };
+    },
+    getSettings() {
+      try { return { ...CONFIG.DEEPSEEK_DEFAULTS, ...JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_SETTINGS)) }; }
+      catch { return { ...CONFIG.DEEPSEEK_DEFAULTS }; }
+    },
+    saveSettings(s) {
+      try { localStorage.setItem(CONFIG.STORAGE_KEY_SETTINGS, JSON.stringify(s)); } catch {}
+    },
+  };
+
+  const Translator = {
+    _buildSystemPrompt() {
+      return 'You are a professional English-to-Chinese translator for academic and technical literature.\n\nAnalyze the given English text and return ONLY a valid JSON object (no markdown fences, no extra text - just raw JSON):\n\n{\n  "chinese": "the accurate, natural Chinese translation",\n  "domain": "professional domain (Machine Learning, Deep Learning, NLP, Computer Vision, Database, Networking, Operating Systems, Frontend, Backend, Algorithm, Security) - or null if general",\n  "pos": "for single words: n. / v. / adj. / adv. / prep. / conj. - for phrases/sentences: null",\n  "keywords": ["3-8 key technical terms from the text"],\n  "summary": "for paragraphs (>8 words): a concise one-sentence Chinese summary. for single terms: a short Chinese explanation of what it means. for short phrases: null",\n  "scenarios": ["array of 2-3 objects, each with \\"en\\" (an authentic English example sentence using the word naturally) and \\"cn\\" (Chinese translation of the sentence). For phrases or paragraphs, provide 1-2 usage scenarios. For very common words, skip this field or return empty array."]\n}\n\nIMPORTANT: Output ONLY the raw JSON object. No markdown, no code block, no explanation.';
+    },
+    _parseApiResponse(content) {
+      try { return JSON.parse(content); } catch {}
+      const codeMatch = content.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+      if (codeMatch) { try { return JSON.parse(codeMatch[1]); } catch {} }
+      const braceMatch = content.match(/\{[\s\S]*\}/);
+      if (braceMatch) { try { return JSON.parse(braceMatch[0]); } catch {} }
+      return null;
+    },
+    lookupEntity(text) {
+      const lower = text.toLowerCase().trim();
+      if (KNOWN_ENTITIES[lower]) return KNOWN_ENTITIES[lower];
+      for (const [key, info] of Object.entries(KNOWN_ENTITIES)) {
+        if (lower.includes(key)) return info;
+      }
+      return null;
+    },
+    detectDomain(text) {
+      const entity = this.lookupEntity(text);
+      if (entity) return entity.domain;
+      const scores = {};
+      for (const [domain, regex] of Object.entries(DOMAIN_KEYWORDS)) {
+        const matches = (text.match(regex) || []).length;
+        if (matches > 0) scores[domain] = matches;
+      }
+      const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      return sorted.length > 0 ? sorted[0][0] : null;
+    },
+    detectPOS(text) {
+      const words = text.trim().split(/\s+/);
+      if (words.length > 3) return null;
+      const word = words[words.length - 1];
+      for (const { pos, pattern } of POS_PATTERNS) { if (pattern.test(word)) return pos; }
+      return null;
+    },
+    extractKeywords(text) {
+      const words = text.match(/\b[A-Za-z][a-z]{3,}(?:-[A-Za-z][a-z]{2,})*\b/g) || [];
+      const stopWords = new Set(['this','that','these','those','with','from','have','been','were','they','their','about','which','would','could','should','there','because','between','through','during','without','within','above','after','before','being','under','other','while','also']);
+      return words.filter(w => !stopWords.has(w.toLowerCase()) && w.length > 3).filter((w, i, arr) => arr.indexOf(w) === i).slice(0, 8);
+    },
+    async translate(text) {
+      const trimmed = text.trim();
+      if (!trimmed) throw new Error('Please enter some text to translate.');
+      const settings = Storage.getSettings();
+      const wordCount = trimmed.split(/\s+/).length;
+      const isParagraph = wordCount > 8;
+
+      if (settings.apiKey) {
+        try {
+          const resp = await fetch(settings.apiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey}` },
+            body: JSON.stringify({ model: settings.model, messages: [{ role: 'system', content: this._buildSystemPrompt() }, { role: 'user', content: trimmed }], temperature: 0.2, max_tokens: 2000 }),
+          });
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(`API: ${errData.error?.message || `HTTP ${resp.status}`}`);
+          }
+          const data = await resp.json();
+          const content = data.choices?.[0]?.message?.content || '';
+          const parsed = this._parseApiResponse(content);
+          if (parsed && parsed.chinese) {
+            return { english: trimmed, chinese: parsed.chinese, domain: parsed.domain || this.detectDomain(trimmed), pos: parsed.pos || this.detectPOS(trimmed), keywords: parsed.keywords || this.extractKeywords(trimmed), isParagraph, summary: parsed.summary || null, scenarios: parsed.scenarios || null, wordCount, source: 'deepseek' };
+          }
+        } catch (err) {
+          if (err.message.startsWith('API:')) throw err;
+          console.warn('DeepSeek error, falling back:', err.message);
+        }
+      }
+
+      const entity = this.lookupEntity(trimmed);
+      const domain = entity ? entity.domain : this.detectDomain(trimmed);
+      const pos = this.detectPOS(trimmed);
+      const keywords = this.extractKeywords(trimmed);
+      let summary = null;
+      if (entity && entity.note) {
+        summary = entity.note;
+      } else if (isParagraph) {
+        summary = `A ${wordCount}-word passage related to ${domain || 'general topics'}. Key terms: ${keywords.slice(0, 5).join(', ') || 'none extracted'}.`;
+      }
+      const scenarios = entity ? [{ en: 'We use ' + trimmed + ' in our daily workflow.', cn: '我们在日常工作中使用 ' + trimmed + '。' }, { en: 'The documentation for ' + trimmed + ' is comprehensive.', cn: trimmed + ' 的文档非常全面。' }] : null;
+      const chinese = settings.apiKey ? '(Translation failed - check browser console for details.)' : '';
+      return { english: trimmed, chinese: chinese || '', domain, pos, keywords, isParagraph, summary, scenarios, wordCount, source: 'client-fallback' };
+    },
+  };
+
+  const NEON_COLORS = [
+    '#ff4060', '#ff7b3d', '#ffcc00', '#00e676', '#00d4ff',
+    '#448aff', '#b388ff', '#ff5faf', '#00e5a0', '#ff9900',
+  ];
+
+  const UI = {
+    toastTimer: null,
+    _speakingBtn: null,
+
+    colorizeWords(text) {
+      if (!text) return '';
+      var colors = NEON_COLORS;
+      var ci = 0;
+      return text.split(/(\s+)/).map(function(seg) {
+        if (seg.trim() === '') return seg;
+        var color = colors[ci % colors.length];
+        ci++;
+        return '<span style="color:' + color + '">' + UI.escapeHtml(seg) + '</span>';
+      }).join('');
+    },
+    toast(message, type) {
+      type = type || 'success';
+      const container = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      el.className = 'toast ' + type;
+      el.textContent = message;
+      container.appendChild(el);
+      clearTimeout(this.toastTimer);
+      this.toastTimer = setTimeout(() => { el.classList.add('out'); el.addEventListener('animationend', () => el.remove()); }, 1800);
+    },
+
+    speakWord(text, accent, btnEl) {
+      if (!text || !window.speechSynthesis) {
+        if (!window.speechSynthesis) this.toast('Speech synthesis not supported in this browser.', 'warning');
+        return;
+      }
+      // If already speaking, stop
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        if (this._speakingBtn) { this._speakingBtn.classList.remove('speaking'); this._speakingBtn = null; }
+        // If clicking the same button that was speaking, just stop
+        if (this._speakingBtn === btnEl) return;
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = accent === 'uk' ? 'en-GB' : 'en-US';
+      utterance.rate = 0.88;
+      utterance.pitch = 1;
+      // Try to find a matching voice
+      const voices = speechSynthesis.getVoices();
+      const targetLang = accent === 'uk' ? 'en-GB' : 'en-US';
+      const preferred = voices.find(v => v.lang.startsWith(targetLang) && v.name.toLowerCase().indexOf('google') === -1)
+        || voices.find(v => v.lang.startsWith(targetLang))
+        || voices.find(v => v.lang.startsWith('en-'));
+      if (preferred) utterance.voice = preferred;
+      // Mark button as speaking
+      if (btnEl) { btnEl.classList.add('speaking'); this._speakingBtn = btnEl; }
+      utterance.onend = () => { if (btnEl) btnEl.classList.remove('speaking'); this._speakingBtn = null; };
+      utterance.onerror = () => { if (btnEl) btnEl.classList.remove('speaking'); this._speakingBtn = null; };
+      speechSynthesis.speak(utterance);
+    },
+
+    _modalResolve: null,
+    showEditModal(term) {
+      return new Promise(resolve => {
+        this._modalResolve = resolve;
+        document.getElementById('editEnglish').value = term.english || '';
+        document.getElementById('editChinese').value = term.chinese || '';
+        document.getElementById('editTags').value = (term.tags || []).join(', ');
+        document.getElementById('editModalOverlay').style.display = 'flex';
+        document.getElementById('editModalOverlay')._term = term;
+        document.getElementById('editEnglish').focus();
+      });
+    },
+    hideEditModal(save) {
+      document.getElementById('editModalOverlay').style.display = 'none';
+      if (!this._modalResolve) return;
+      if (save) {
+        const term = document.getElementById('editModalOverlay')._term;
+        this._modalResolve({ english: document.getElementById('editEnglish').value.trim(), chinese: document.getElementById('editChinese').value.trim(), tags: document.getElementById('editTags').value.split(',').map(s => s.trim()).filter(Boolean) });
+      } else { this._modalResolve(null); }
+      this._modalResolve = null;
+    },
+
+    showSettingsModal() {
+      const s = Storage.getSettings();
+      document.getElementById('settingsApiKey').value = s.apiKey || '';
+      document.getElementById('settingsEndpoint').value = s.apiEndpoint || CONFIG.DEEPSEEK_DEFAULTS.apiEndpoint;
+      document.getElementById('settingsModel').value = s.model || CONFIG.DEEPSEEK_DEFAULTS.model;
+      document.getElementById('testResult').style.display = 'none';
+      document.getElementById('settingsModalOverlay').style.display = 'flex';
+      document.getElementById('settingsApiKey').focus();
+    },
+    hideSettingsModal() { document.getElementById('settingsModalOverlay').style.display = 'none'; },
+    saveSettingsFromUI() {
+      Storage.saveSettings({ apiKey: document.getElementById('settingsApiKey').value.trim(), apiEndpoint: document.getElementById('settingsEndpoint').value.trim() || CONFIG.DEEPSEEK_DEFAULTS.apiEndpoint, model: document.getElementById('settingsModel').value.trim() || CONFIG.DEEPSEEK_DEFAULTS.model });
+      this.updateApiStatus(); this.hideSettingsModal(); this.toast('Settings saved.');
+    },
+    async testConnection() {
+      const apiKey = document.getElementById('settingsApiKey').value.trim();
+      const endpoint = document.getElementById('settingsEndpoint').value.trim() || CONFIG.DEEPSEEK_DEFAULTS.apiEndpoint;
+      const model = document.getElementById('settingsModel').value.trim() || CONFIG.DEEPSEEK_DEFAULTS.model;
+      const el = document.getElementById('testResult');
+      if (!apiKey) { el.style.display = 'block'; el.className = 'test-result error'; el.textContent = 'Please enter an API key first.'; return; }
+      el.style.display = 'block'; el.className = 'test-result'; el.textContent = 'Testing connection...';
+      try {
+        const resp = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify({ model, messages: [{ role: 'user', content: 'Reply with only the word: ok' }], max_tokens: 10, temperature: 0 }) });
+        if (!resp.ok) { const errData = await resp.json().catch(() => ({})); throw new Error(errData.error?.message || `HTTP ${resp.status}`); }
+        el.className = 'test-result success'; el.textContent = 'Connected - model "' + model + '" is ready.';
+      } catch (err) { el.className = 'test-result error'; el.textContent = 'Failed: ' + err.message; }
+    },
+    updateApiStatus() {
+      const s = Storage.getSettings();
+      const dot = document.querySelector('#apiStatus .api-dot');
+      const status = document.getElementById('apiStatus');
+      if (s.apiKey) { dot.className = 'api-dot active'; status.title = 'API configured - ' + s.model; }
+      else { dot.className = 'api-dot inactive'; status.title = 'API not configured - click gear to set up'; }
+    },
+
+    renderResult(data) {
+      document.getElementById('resultEmpty').style.display = 'none';
+      document.getElementById('resultContent').style.display = 'block';
+      document.getElementById('saveSection').style.display = 'block';
+      var isSingleWord = data.english.trim().split(/\s+/).length === 1;
+      var h = '<div class="result-section"><div class="result-label">English</div><div class="result-english-wrapper"><div class="result-english">' + this.escapeHtml(data.english) + '</div>';
+      // Pronunciation buttons for single words
+      if (isSingleWord && window.speechSynthesis) {
+        h += '<div class="speak-btns">';
+        h += '<button class="btn-speak btn-speak-us" data-accent="us" data-word="' + this.escapeHtml(data.english) + '"><span class="speak-flag">&#x1F1FA;&#x1F1F8;</span> US</button>';
+        h += '<button class="btn-speak btn-speak-uk" data-accent="uk" data-word="' + this.escapeHtml(data.english) + '"><span class="speak-flag">&#x1F1EC;&#x1F1E7;</span> UK</button>';
+        h += '</div>';
+      }
+      h += '</div></div>';
+      h += '<div class="result-section"><div class="result-label">Chinese Translation</div><div class="result-chinese">' + (this.escapeHtml(data.chinese) || '<span style="color:var(--text-muted);font-style:italic;">Translation not available</span>') + '</div></div>';
+      h += '<div class="result-section"><div class="result-meta">';
+      if (data.domain) h += '<span class="meta-chip meta-domain">&#x1F3F7; ' + this.escapeHtml(data.domain) + '</span>';
+      if (data.pos) h += '<span class="meta-chip meta-pos">&#x1F4D6; ' + this.escapeHtml(data.pos) + '</span>';
+      if (data.keywords && data.keywords.length) data.keywords.forEach(function(kw) { h += '<span class="meta-chip meta-keyword"># ' + UI.escapeHtml(kw) + '</span>'; });
+      h += '</div></div>';
+      if (data.summary) h += '<div class="result-section"><div class="result-label">Summary</div><div class="result-summary">' + this.escapeHtml(data.summary) + '</div></div>';
+      // Scenarios section
+      if (data.scenarios && data.scenarios.length) {
+        h += '<div class="result-section"><div class="result-label">&#x1F4AC; Usage Scenarios</div><div class="scenarios-list">';
+        data.scenarios.forEach(function(s) {
+          h += '<div class="scenario-item"><span class="scenario-en">' + UI.escapeHtml(s.en) + '</span><span class="scenario-cn">' + UI.escapeHtml(s.cn) + '</span></div>';
+        });
+        h += '</div></div>';
+      }
+      document.getElementById('resultContent').innerHTML = h;
+      // Bind speak buttons
+      var self = this;
+      document.querySelectorAll('.btn-speak').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          self.speakWord(btn.dataset.word, btn.dataset.accent, btn);
+        });
+      });
+    },
+    clearResult() {
+      document.getElementById('resultEmpty').style.display = 'flex';
+      document.getElementById('resultContent').style.display = 'none';
+      document.getElementById('saveSection').style.display = 'none';
+    },
+
+    renderRecent() {
+      var list = document.getElementById('recentList');
+      var recent = Storage.getRecent();
+      if (!recent.length) { list.innerHTML = '<div class="recent-empty">No recent translations yet.</div>'; return; }
+      list.innerHTML = recent.map(function(r, i) {
+        return '<div class="recent-item" data-index="' + i + '"><span class="recent-item-text">' + UI.escapeHtml(r.english.slice(0, 55)) + (r.english.length > 55 ? '...' : '') + '</span><span class="recent-item-time">' + UI.timeAgo(r.date) + '</span></div>';
+      }).join('');
+      list.querySelectorAll('.recent-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+          var item = recent[parseInt(el.dataset.index)];
+          if (item) { document.getElementById('inputText').value = item.english; UI.renderResult(item); App._lastResult = item; document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        });
+      });
+    },
+
+    renderCollection(filter) {
+      filter = filter || '';
+      var grid = document.getElementById('collectionGrid');
+      var countEl = document.getElementById('collectionCount');
+      var terms = Storage.getTerms();
+      if (filter) { var q = filter.toLowerCase(); terms = terms.filter(function(t) { return t.english.toLowerCase().indexOf(q) !== -1 || (t.chinese && t.chinese.indexOf(q) !== -1) || (t.tags && t.tags.some(function(tag) { return tag.toLowerCase().indexOf(q) !== -1; })); }); }
+      countEl.innerHTML = '<strong>' + terms.length + '</strong> term' + (terms.length !== 1 ? 's' : '');
+      if (!terms.length) {
+        grid.innerHTML = '<div class="collection-empty"><div class="collection-empty-icon">' + (filter ? '&#x1F50D;' : '&#x1F4DA;') + '</div><div class="collection-empty-title">' + (filter ? 'No matching terms' : 'Your collection is empty') + '</div><div class="collection-empty-text">' + (filter ? 'Try a different search term.' : 'Translate some text and click the star button to start building your personal terminology library.') + '</div></div>';
+        return;
+      }
+      grid.innerHTML = terms.map(function(t, i) {
+        var h = '<div class="term-card" data-id="' + t.id + '" style="animation-delay:' + (i * 40) + 'ms;"><div class="term-card-header"><span class="term-english">' + UI.escapeHtml(t.english) + '</span><span class="term-id">#' + t.id.slice(-6) + '</span></div><div class="term-chinese">' + UI.escapeHtml(t.chinese || '-') + '</div>';
+        if (t.tags && t.tags.length) { h += '<div class="term-tags">' + t.tags.map(function(tag) { return '<span class="term-tag">' + UI.escapeHtml(tag) + '</span>'; }).join('') + '</div>'; }
+        if (t.domain) { h += '<div class="term-tags"><span class="term-tag" style="background:rgba(0,112,144,0.08);color:#007090;border-color:rgba(0,112,144,0.15);">' + UI.escapeHtml(t.domain) + '</span></div>'; }
+        if (t.scenarios && t.scenarios.length) { h += '<div class="scenarios-list" style="margin-top:4px;">' + t.scenarios.slice(0, 2).map(function(s) { return '<div class="scenario-item" style="padding:6px 10px;font-size:0.74rem;"><span class="scenario-en" style="font-size:0.74rem;">' + UI.escapeHtml(s.en) + '</span><span class="scenario-cn" style="font-size:0.74rem;">' + UI.escapeHtml(s.cn) + '</span></div>'; }).join('') + '</div>'; }
+        h += '<div class="term-date">' + UI.formatDate(t.date) + '</div><div class="term-actions"><button class="btn btn-ghost btn-xs copy-term" data-id="' + t.id + '">&#x1F4CB; Copy</button><button class="btn btn-ghost btn-xs edit-term" data-id="' + t.id + '">&#x270E; Edit</button><button class="btn btn-ghost btn-xs delete-term" data-id="' + t.id + '" style="color:var(--color-rose);">&#x1F5D1; Delete</button></div></div>';
+        return h;
+      }).join('');
+      grid.querySelectorAll('.copy-term').forEach(function(btn) { btn.addEventListener('click', function(e) { e.stopPropagation(); var term = terms.find(function(t) { return t.id === btn.dataset.id; }); if (term) { navigator.clipboard.writeText(term.english + '\n' + (term.chinese || '')).then(function() { UI.toast('Copied.'); }).catch(function() { UI.toast('Copy failed.', 'warning'); }); } }); });
+      grid.querySelectorAll('.edit-term').forEach(function(btn) { btn.addEventListener('click', function(e) { e.stopPropagation(); var term = terms.find(function(t) { return t.id === btn.dataset.id; }); if (!term) return; UI.showEditModal(term).then(function(result) { if (result) { Storage.updateTerm(term.id, result); UI.toast('Updated.'); UI.renderCollection(document.getElementById('searchInput').value); } }); }); });
+      grid.querySelectorAll('.delete-term').forEach(function(btn) { btn.addEventListener('click', function(e) { e.stopPropagation(); var term = terms.find(function(t) { return t.id === btn.dataset.id; }); if (!term) return; if (confirm('Delete "' + term.english + '"?')) { Storage.deleteTerm(term.id); UI.toast('Deleted.'); UI.renderCollection(document.getElementById('searchInput').value); } }); });
+    },
+
+    _currentTags: [],
+    getCurrentTags() { return this._currentTags.slice(); },
+    setCurrentTags(tags) { this._currentTags = tags.slice(); this._renderTagChips(); },
+    clearCurrentTags() { this._currentTags = []; this._renderTagChips(); },
+    _renderTagChips() {
+      var area = document.getElementById('tagInputArea');
+      area.querySelectorAll('.tag-chip').forEach(function(el) { el.remove(); });
+      var input = document.getElementById('tagInputField');
+      this._currentTags.forEach(function(tag, idx) {
+        var chip = document.createElement('span'); chip.className = 'tag-chip';
+        chip.innerHTML = UI.escapeHtml(tag) + '<button class="tag-chip-remove" data-tag-idx="' + idx + '">&times;</button>';
+        area.insertBefore(chip, input);
+      });
+      area.querySelectorAll('.tag-chip-remove').forEach(function(btn) { btn.addEventListener('click', function() { UI._currentTags.splice(parseInt(btn.dataset.tagIdx), 1); UI._renderTagChips(); }); });
+    },
+    renderTagSuggestions() {
+      var container = document.getElementById('tagSuggestions');
+      var current = {};
+      this._currentTags.forEach(function(t) { current[t] = true; });
+      var recentTags = {};
+      Storage.getTerms().forEach(function(t) { (t.tags || []).forEach(function(tag) { recentTags[tag] = true; }); });
+      var suggestions = PRESET_TAGS.filter(function(t) { return !current[t]; });
+      Object.keys(recentTags).forEach(function(t) { if (!current[t] && PRESET_TAGS.indexOf(t) === -1) suggestions.push(t); });
+      container.innerHTML = suggestions.slice(0, 15).map(function(t) { return '<button class="tag-suggestion" data-tag="' + UI.escapeHtml(t) + '">' + UI.escapeHtml(t) + '</button>'; }).join('');
+      container.querySelectorAll('.tag-suggestion').forEach(function(btn) { btn.addEventListener('click', function() { var tag = btn.dataset.tag; if (UI._currentTags.indexOf(tag) === -1) { UI._currentTags.push(tag); UI._renderTagChips(); UI.renderTagSuggestions(); } }); });
+    },
+
+    switchView(view) {
+      var tv = document.getElementById('translateView');
+      var cv = document.getElementById('collectionView');
+      document.querySelectorAll('.nav-btn').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.view === view); });
+      if (view === 'collection') { tv.style.display = 'none'; cv.classList.add('active'); UI.renderCollection(); document.getElementById('searchInput').focus(); }
+      else { tv.style.display = ''; cv.classList.remove('active'); UI.renderRecent(); document.getElementById('inputText').focus(); }
+    },
+
+    escapeHtml(str) { var d = document.createElement('div'); d.textContent = str; return d.innerHTML; },
+    timeAgo(dateStr) { var d = new Date(dateStr); var n = new Date(); var m = Math.floor((n - d) / 60000); if (m < 1) return 'just now'; if (m < 60) return m + 'm ago'; var h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; var days = Math.floor(h / 24); if (days < 30) return days + 'd ago'; return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); },
+    formatDate(dateStr) { return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); },
+    setLoading(btn, loading) { if (loading) { btn.classList.add('btn-loading'); btn._orig = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span> Translating...'; } else { btn.classList.remove('btn-loading'); if (btn._orig) { btn.innerHTML = btn._orig; delete btn._orig; } } },
+    updateCharCount() { var t = document.getElementById('inputText').value; document.getElementById('charCount').textContent = t.length + ' character' + (t.length !== 1 ? 's' : ''); },
+  };
+
+  const App = {
+    _lastResult: null,
+    async init() {
+      this.bindEvents();
+      this.bindKeyboardShortcuts();
+      UI.renderRecent();
+      UI.renderTagSuggestions();
+      UI.updateCharCount();
+      UI.updateApiStatus();
+      // Preload speech synthesis voices
+      if (window.speechSynthesis) {
+        speechSynthesis.getVoices();
+        speechSynthesis.onvoiceschanged = function() { speechSynthesis.getVoices(); };
+      }
+    },
+    bindEvents() {
+      document.querySelectorAll('.nav-btn').forEach(function(btn) { btn.addEventListener('click', function() { UI.switchView(btn.dataset.view); }); });
+      document.getElementById('btnTranslate').addEventListener('click', function() { App.doTranslate(); });
+      document.getElementById('btnClear').addEventListener('click', function() { App.doClear(); });
+      document.getElementById('inputText').addEventListener('input', function() { UI.updateCharCount(); });
+      document.getElementById('btnSave').addEventListener('click', function() { App.doSave(); });
+
+      var tagInput = document.getElementById('tagInputField');
+      tagInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); var v = tagInput.value.trim(); if (v && UI._currentTags.indexOf(v) === -1) { UI._currentTags.push(v); UI._renderTagChips(); UI.renderTagSuggestions(); tagInput.value = ''; } } });
+
+      var searchInput = document.getElementById('searchInput');
+      var searchDebounce;
+      searchInput.addEventListener('input', function() { clearTimeout(searchDebounce); searchDebounce = setTimeout(function() { UI.renderCollection(searchInput.value); }, 200); });
+
+      document.getElementById('btnClearCollection').addEventListener('click', function() {
+        var terms = Storage.getTerms();
+        if (!terms.length) return;
+        if (confirm('Delete all ' + terms.length + ' saved terms? This cannot be undone.')) { Storage.saveTerms([]); UI.toast('All terms cleared.'); UI.renderCollection(); }
+      });
+      document.getElementById('btnClearRecent').addEventListener('click', function() { Storage.clearHistory(); UI.renderRecent(); UI.toast('History cleared.'); });
+      document.getElementById('btnExportJSON').addEventListener('click', function() { App.exportJSON(); });
+      document.getElementById('btnExportMD').addEventListener('click', function() { App.exportMarkdown(); });
+      document.getElementById('btnImport').addEventListener('click', function() { App.importJSON(); });
+
+      document.getElementById('btnEditSave').addEventListener('click', function() { UI.hideEditModal(true); });
+      document.getElementById('btnEditCancel').addEventListener('click', function() { UI.hideEditModal(false); });
+      document.getElementById('editModalOverlay').addEventListener('click', function(e) { if (e.target === e.currentTarget) UI.hideEditModal(false); });
+
+      document.getElementById('btnSettings').addEventListener('click', function() { UI.showSettingsModal(); });
+      document.getElementById('btnSettingsSave').addEventListener('click', function() { UI.saveSettingsFromUI(); });
+      document.getElementById('btnSettingsCancel').addEventListener('click', function() { UI.hideSettingsModal(); });
+      document.getElementById('settingsModalOverlay').addEventListener('click', function(e) { if (e.target === e.currentTarget) UI.hideSettingsModal(); });
+      document.getElementById('btnTestConnection').addEventListener('click', function() { UI.testConnection(); });
+
+      document.addEventListener('keydown', function(e) { if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); UI.switchView('collection'); document.getElementById('searchInput').focus(); } });
+    },
+    bindKeyboardShortcuts() {
+      document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); App.doTranslate(); }
+        if (e.key === 'Escape' && document.activeElement === document.getElementById('inputText')) { e.preventDefault(); App.doClear(); }
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); App.doSave(); }
+      });
+    },
+    async doTranslate() {
+      var input = document.getElementById('inputText');
+      var btn = document.getElementById('btnTranslate');
+      var text = input.value.trim();
+      if (!text) { UI.toast('Please enter some text first.', 'warning'); return; }
+      UI.setLoading(btn, true);
+      try {
+        var result = await Translator.translate(text);
+        UI.renderResult(result);
+        App._lastResult = result;
+        Storage.addHistory(result);
+        UI.renderRecent();
+        if (result.domain && UI._currentTags.indexOf(result.domain) === -1) { UI._currentTags.push(result.domain); UI._renderTagChips(); UI.renderTagSuggestions(); }
+        if (window.innerWidth < 900) { document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      } catch (err) {
+        UI.toast(err.message || 'Translation failed.', 'warning');
+        console.error(err);
+      } finally { UI.setLoading(btn, false); }
+    },
+    doClear() {
+      document.getElementById('inputText').value = '';
+      UI.clearResult(); UI.clearCurrentTags(); UI.renderTagSuggestions(); UI.updateCharCount();
+      App._lastResult = null; document.getElementById('inputText').focus();
+    },
+    doSave() {
+      if (!App._lastResult) { UI.toast('Nothing to save. Translate something first.', 'warning'); return; }
+      var tags = UI.getCurrentTags();
+      if (!tags.length) tags.push('Uncategorized');
+      var action = Storage.addTerm({ english: App._lastResult.english, chinese: App._lastResult.chinese, domain: App._lastResult.domain, pos: App._lastResult.pos, keywords: App._lastResult.keywords, summary: App._lastResult.summary, scenarios: App._lastResult.scenarios, tags: tags });
+      UI.toast(action === 'saved' ? 'Saved.' : 'Updated existing term.');
+      var saveBtn = document.getElementById('btnSave');
+      saveBtn.classList.add('saved'); saveBtn.innerHTML = '&#x2713; Saved';
+      setTimeout(function() { saveBtn.classList.remove('saved'); saveBtn.innerHTML = '&#x2B50; Save Term <span class="shortcut-hint">Ctrl+S</span>'; }, 1500);
+      UI.clearCurrentTags(); UI.renderTagSuggestions();
+    },
+    exportJSON() { var j = Storage.exportJSON(); var b = new Blob([j], { type: 'application/json' }); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'utopia-terminology-' + new Date().toISOString().slice(0, 10) + '.json'; a.click(); URL.revokeObjectURL(u); UI.toast('JSON exported.'); },
+    exportMarkdown() { var m = Storage.exportMarkdown(); var b = new Blob([m], { type: 'text/markdown' }); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'my-terminology-' + new Date().toISOString().slice(0, 10) + '.md'; a.click(); URL.revokeObjectURL(u); UI.toast('Markdown exported.'); },
+    importJSON() {
+      var fi = document.getElementById('importFile'); fi.value = '';
+      fi.onchange = function(e) { var f = e.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function(ev) { try { var result = Storage.importJSON(ev.target.result); UI.toast('Imported: ' + result.added + ' added, ' + result.skipped + ' skipped.'); UI.renderCollection(); } catch (err) { UI.toast(err.message, 'warning'); } }; r.readAsText(f); fi.onchange = null; };
+      fi.click();
+    },
+  };
+
+  document.addEventListener('DOMContentLoaded', function() { App.init(); });
+})();
+</script>
+</body>
+</html>
