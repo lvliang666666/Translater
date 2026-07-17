@@ -1,0 +1,37 @@
+# === API Keys & Secrets ===
+.env
+.env.*
+*.env
+config.local.*
+secrets.*
+credentials.*
+
+# === Dependencies ===
+node_modules/
+bower_components/
+
+# === OS junk ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# === Editor junk ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# === Build output ===
+dist/
+build/
+*.log
+*.tmp
